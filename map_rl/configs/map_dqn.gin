@@ -17,7 +17,7 @@ MapDQNAgent.clip_qt_max = True  # if True, clips TD targets.
 MapDQNAgent.clip_q_chosen = True  # if True, clips chosen Q.
 MapDQNAgent.alpha = 0.00025  # alpha = beta_reg * beta_f
 
-MapDQNAgent.gamma = 0.96
+MapDQNAgent.gamma = 1 #0.96
 MapDQNAgent.update_horizon = 1
 MapDQNAgent.min_replay_history = 20000  # agent steps
 MapDQNAgent.update_period = 4
@@ -25,7 +25,7 @@ MapDQNAgent.target_update_period = 8000  # agent steps
 MapDQNAgent.epsilon_train = 0.01
 MapDQNAgent.epsilon_eval = 0.001
 MapDQNAgent.epsilon_decay_period = 250000  # agent steps
-MapDQNAgent.tf_device = '/gpu:0'  # use '/cpu:*' for non-GPU version
+MapDQNAgent.tf_device = '/gpu:1'  # use '/cpu:*' for non-GPU version
 MapDQNAgent.optimizer = @tf.train.RMSPropOptimizer()
 
 tf.train.RMSPropOptimizer.learning_rate = 0.0025  # beta_f
@@ -34,7 +34,7 @@ tf.train.RMSPropOptimizer.momentum = 0.0
 tf.train.RMSPropOptimizer.epsilon = 0.00001
 tf.train.RMSPropOptimizer.centered = True
 
-atari_lib.create_atari_environment.game_name = 'Pong'
+atari_lib.create_atari_environment.game_name = 'MsPacman'
 # Sticky actions with probability 0.25, as suggested by (Machado et al., 2017).
 atari_lib.create_atari_environment.sticky_actions = True
 experiment_runner.create_agent.agent_name = 'map_dqn'

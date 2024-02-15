@@ -35,7 +35,7 @@ We install the required packages within a virtual environment.
 Create a virtual environment using `conda` via: 
 
 ```
-conda create --name maprl-env python=3.8
+conda create --name maprl-env python=3.10
 conda activate maprl-env
 ```
 
@@ -48,6 +48,11 @@ To set up the Atari suite, please follow the steps outlined [here](https://githu
 **Install Dopamine.** Install a compatible version of [Dopamine][dopamine_repo] with `pip`:
 ```
 pip install dopamine-rl==3.1.10
+```
+
+**Install Tensirflow.**
+```
+pip install tensorflow[and-cuda]
 ```
 
 

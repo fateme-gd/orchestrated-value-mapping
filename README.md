@@ -50,7 +50,7 @@ To set up the Atari suite, please follow the steps outlined [here](https://githu
 pip install dopamine-rl==3.1.10
 ```
 
-**Install Tensirflow.**
+**Install gpu enabled Tensorflow.**
 ```
 pip install tensorflow[and-cuda]
 ```

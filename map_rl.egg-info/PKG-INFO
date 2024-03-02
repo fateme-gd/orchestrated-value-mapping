@@ -1,0 +1,10 @@
+Metadata-Version: 2.1
+Name: map-rl
+Version: 0.1.0
+Summary: "Orchestrated Value Mapping for Reinforcement Learning" built on Dopamine
+Home-page: https://github.com/microsoft/orchestrated-value-mapping
+License: MIT
+Keywords: map_rl,map_dqn,dopamine,deep,reinforcement,machine,learning,research
+Requires-Python: >=3.7
+License-File: LICENSE
+License-File: NOTICE.md

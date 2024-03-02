@@ -165,10 +165,10 @@ class MapDQNAgent(dqn_agent.DQNAgent):
       self.num_reward_channels = len(self.map_func_id)
       lambdas_on_heads =      [ 10**i for i in range(0, int(self.num_reward_channels / 2))]
       lambdas_on_heads.extend([-10**i for i in range(0, int(self.num_reward_channels / 2))])
-    elif self.rew_decomp_id == 'config_2':
+    elif self.rew_decomp_id == 'config_2': #CHANGES : I changed config 2 to get only positive heads
       self.num_reward_channels = len(self.map_func_id)
-      lambdas_on_heads =      [ 1 if i==0 else  9*(10**(i-1)) for i in range(0, int(self.num_reward_channels / 2))]
-      lambdas_on_heads.extend([-1 if i==0 else -9*(10**(i-1)) for i in range(0, int(self.num_reward_channels / 2))])
+      lambdas_on_heads =      [ 1 if i==0 else  9*(10**(i-1)) for i in range(0, int(self.num_reward_channels ))]
+      # lambdas_on_heads.extend([-1 if i==0 else -9*(10**(i-1)) for i in range(0, int(self.num_reward_channels / 2))])
     elif self.rew_decomp_id == 'two_ensemble_polar':
       self.num_reward_channels = 4
       lambdas_on_heads = [0.5, -0.5, 0.5, -0.5]
@@ -568,8 +568,9 @@ class MapDQNAgent(dqn_agent.DQNAgent):
   @tf.function
   def config_2_decomp(self, raw_replay_rewards, head_id):
     """Decomposes a reward following Configuration 2 of Fatemi & Tavakoli (2022)."""
-    assert self.num_reward_channels / 2 in [1,2,3,4]
-    if head_id < (self.num_reward_channels / 2):
+    assert self.num_reward_channels > 0
+    # assert self.num_reward_channels / 2 in [1,2,3,4]
+    if head_id < (self.num_reward_channels):
       assert self.lambdas_on_heads[head_id] > 0
       replay_rewards = self.rewards_above_a(raw_replay_rewards, a=self.zero)
       hid = head_id

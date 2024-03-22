@@ -10,7 +10,7 @@ MapDQNAgent.network = @models.MapDQNNetwork
 # The number of reward channels are determined from the number of mapping functions.
 MapDQNAgent.map_func_id = "[identity,identity, identity]"
 # Implemented reward decomposition schemes: {polar,config_1,config_2,two_ensemble_polar}.
-MapDQNAgent.rew_decomp_id = 'polar'
+MapDQNAgent.rew_decomp_id = 'config_2'
 MapDQNAgent.use_gradscaling = False  # if True, rescales shared grads by 1/sqrt(num_heads)
 MapDQNAgent.use_nonlinear_heads = True  # if True, uses a nonlinear hidden layer in each head
 MapDQNAgent.clip_qt_max = True  # if True, clips TD targets.
@@ -34,7 +34,7 @@ tf.train.RMSPropOptimizer.momentum = 0.0
 tf.train.RMSPropOptimizer.epsilon = 0.00001
 tf.train.RMSPropOptimizer.centered = True
 
-#atari_lib.create_atari_environment.game_name = 'MsPacman'
+atari_lib.create_atari_environment.game_name = 'MsPacman'
 # Sticky actions with probability 0.25, as suggested by (Machado et al., 2017).
 atari_lib.create_atari_environment.sticky_actions = True
 experiment_runner.create_agent.agent_name = 'map_dqn'

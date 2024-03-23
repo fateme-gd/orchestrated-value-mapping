@@ -17,7 +17,7 @@ MapDQNAgent.clip_qt_max = True  # if True, clips TD targets.
 MapDQNAgent.clip_q_chosen = True  # if True, clips chosen Q.
 MapDQNAgent.alpha = 0.00025  # alpha = beta_reg * beta_f
 
-MapDQNAgent.gamma = 1 #0.96
+MapDQNAgent.gamma = 0.96
 MapDQNAgent.update_horizon = 1
 MapDQNAgent.min_replay_history = 20000  # agent steps
 MapDQNAgent.update_period = 4

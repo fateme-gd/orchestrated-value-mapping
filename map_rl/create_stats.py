@@ -14,6 +14,7 @@ from dopamine.discrete_domains import atari_lib
 from dopamine.discrete_domains import checkpointer
 import gin
 import tensorflow as tf
+import json
 
 
 flags.DEFINE_string('base_dir', None,
@@ -52,6 +53,8 @@ class RandomDQNAgent(map_dqn_agent.MapDQNAgent):
 
 # Main function to create the environment, agent, and run the agent
 def main(unused_argv):
+    stat = {}
+    stat_file = "stat_file.json"
     logging.set_verbosity(logging.INFO)
     tf.compat.v1.disable_v2_behavior()
     load_gin_configs(FLAGS.gin_files, FLAGS.gin_bindings)
@@ -65,7 +68,7 @@ def main(unused_argv):
     config.gpu_options.allow_growth = True
 
     sess = tf.compat.v1.Session('', config=config)
-    agent = RandomDQNAgent(sess, num_actions=env.action_space.n)
+    agent = map_dqn_agent.MapDQNAgent(sess, num_actions=env.action_space.n, eval_mode = True)
 
     sess.run(tf.compat.v1.global_variables_initializer())
 
@@ -77,18 +80,36 @@ def main(unused_argv):
     print("path: ", checkpoint_path)
     print("latest: " , latest_checkpoint_version)
     if latest_checkpoint_version >= 0:
-      experiment_data = _checkpointer.load_checkpoint(latest_checkpoint_version)
+      experiment_data = _checkpointer.load_checkpoint(latest_checkpoint_version) #ToDo here I can specify the iteration number instead of latest checkpoint
     agent.unbundle(checkpoint_path, latest_checkpoint_version, experiment_data)
     
     observation = env.reset()
     reward = 0
     done = False
     
+
+    step = 0
     # Run the agent in the environment for one episode
-    while not done:
-        action = agent.step(reward, observation)
+    while not done and step <=500:
+        action = agent.step(reward, observation) #TO DO the original step returns an action too, just select eval mode look at the original select action and see how it executes the q argmax with the state
+        # continue from above: you should have something similar to that except that it _sess.run all the q_values! self._net_outputs.q_values?
+        #action_random = np.random.randint(agent.num_actions)
+
+        heads = {}
+        array_head = agent._sess.run(agent._net_outputs.q_values_on_heads, {agent.state_ph: agent.state})
+        
+        heads["head1"] = array_head[0].tolist()
+        heads["head2"] = array_head[1].tolist()
+        heads["head3"] = array_head[2].tolist()
+
         observation, reward, done, _ = env.step(action)
         print(f"Action: {action}, Reward: {reward}")
+        stat[f"step{step}"] = heads 
+        step += 1
+
+    print(stat)
+    with open(stat_file, 'w') as f:
+        json.dump(stat, f, indent=4)
 
 
 

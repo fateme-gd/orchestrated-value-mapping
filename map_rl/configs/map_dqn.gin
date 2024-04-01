@@ -5,8 +5,11 @@ import map_rl.experiment_runner
 import map_rl.map_dqn_agent
 import map_rl.circular_replay_buffer
 import gin.tf.external_configurables
+import map_rl.check_channels
 
 MapDQNAgent.network = @models.MapDQNNetwork
+#MapDQNAgent.network = @check_channels.modifiedNetwork #TODO change to this in run
+
 # The number of reward channels are determined from the number of mapping functions.
 MapDQNAgent.map_func_id = "[loglin,loglin]"
 # Implemented reward decomposition schemes: {polar,config_1,config_2,two_ensemble_polar}.
@@ -16,6 +19,7 @@ MapDQNAgent.use_nonlinear_heads = True  # if True, uses a nonlinear hidden layer
 MapDQNAgent.clip_qt_max = True  # if True, clips TD targets.
 MapDQNAgent.clip_q_chosen = True  # if True, clips chosen Q.
 MapDQNAgent.alpha = 0.00025  # alpha = beta_reg * beta_f
+MapDQNAgent.eval_mode=False 
 
 MapDQNAgent.gamma = 0.96
 MapDQNAgent.update_horizon = 1
@@ -27,6 +31,7 @@ MapDQNAgent.epsilon_eval = 0.001
 MapDQNAgent.epsilon_decay_period = 250000  # agent steps
 MapDQNAgent.tf_device = '/gpu:1'  # use '/cpu:*' for non-GPU version
 MapDQNAgent.optimizer = @tf.train.RMSPropOptimizer()
+MapDQNAgent.max_tf_checkpoints_to_keep=4
 
 tf.train.RMSPropOptimizer.learning_rate = 0.0025  # beta_f
 tf.train.RMSPropOptimizer.decay = 0.95

@@ -91,9 +91,7 @@ def main(unused_argv):
     step = 0
     # Run the agent in the environment for one episode
     while not done and step <=500:
-        action = agent.step(reward, observation) #TO DO the original step returns an action too, just select eval mode look at the original select action and see how it executes the q argmax with the state
-        # continue from above: you should have something similar to that except that it _sess.run all the q_values! self._net_outputs.q_values?
-        #action_random = np.random.randint(agent.num_actions)
+        action = agent.step(reward, observation) #this step function changes q outputs and state
 
         heads = {}
         array_head = agent._sess.run(agent._net_outputs.q_values_on_heads, {agent.state_ph: agent.state})

@@ -78,7 +78,8 @@ class MapDQNAgent(dqn_agent.DQNAgent):
                    centered=True),
                summary_writer=None,
                summary_writing_frequency=500,
-               allow_partial_reload=False):
+               allow_partial_reload=False,
+               change_head = False):
     assert isinstance(observation_shape, tuple)
     
     try:
@@ -176,6 +177,9 @@ class MapDQNAgent(dqn_agent.DQNAgent):
       raise NotImplementedError(self.rew_decomp_id)
 
     self.lambdas_on_heads = [self.np_float(head_lambda) for head_lambda in lambdas_on_heads]
+
+    if self.change_head = True:
+      self.lambdas_on_heads[-1] = 0.0 
 
     logging.info('\t num_reward_channels: %s', self.num_reward_channels)
     logging.info('\t lambdas_on_heads: %s', self.lambdas_on_heads)

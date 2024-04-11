@@ -8,7 +8,6 @@ import gin.tf.external_configurables
 import map_rl.check_channels
 
 MapDQNAgent.network = @models.MapDQNNetwork
-#MapDQNAgent.network = @check_channels.modifiedNetwork #TODO change to this in run
 
 # The number of reward channels are determined from the number of mapping functions.
 MapDQNAgent.map_func_id = "[loglin,loglin]"
@@ -32,6 +31,7 @@ MapDQNAgent.epsilon_decay_period = 250000  # agent steps
 MapDQNAgent.tf_device = '/gpu:1'  # use '/cpu:*' for non-GPU version
 MapDQNAgent.optimizer = @tf.train.RMSPropOptimizer()
 MapDQNAgent.max_tf_checkpoints_to_keep=4
+MapDQNAgent.change_head = False
 
 tf.train.RMSPropOptimizer.learning_rate = 0.0025  # beta_f
 tf.train.RMSPropOptimizer.decay = 0.95
@@ -45,7 +45,7 @@ atari_lib.create_atari_environment.sticky_actions = True
 experiment_runner.create_agent.agent_name = 'map_dqn'
 # Rewards are internally clipped according to the reward decomposition scheme.
 Runner.clip_rewards = False
-Runner.num_iterations = 200
+Runner.num_iterations = 100
 Runner.training_steps = 250000  # agent steps
 Runner.evaluation_steps = 125000  # agent steps
 Runner.max_steps_per_episode = 27000  # agent steps

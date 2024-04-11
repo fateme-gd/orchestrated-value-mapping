@@ -100,7 +100,7 @@ class MapDQNNetwork(tf.keras.Model):
       t = tf.multiply(x, gradscale_mult)
       x = t + tf.stop_gradient(x - t)
     x = tf.cast(x, self.tf_float)
-
+ 
     q_tilde_values_on_heads = []
     q_values_on_heads = []
     # Form of 'map_func_params', e.g., for the polar reward decomposition: 

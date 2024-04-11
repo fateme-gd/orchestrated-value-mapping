@@ -55,6 +55,7 @@ class RandomDQNAgent(map_dqn_agent.MapDQNAgent):
 def main(unused_argv):
     stat = {}
     stat_file = "stat_file.json"
+    new_stat_file = "onluoneEpisIden_stat_file.json"
     logging.set_verbosity(logging.INFO)
     tf.compat.v1.disable_v2_behavior()
     load_gin_configs(FLAGS.gin_files, FLAGS.gin_bindings)
@@ -68,6 +69,8 @@ def main(unused_argv):
     config.gpu_options.allow_growth = True
 
     sess = tf.compat.v1.Session('', config=config)
+    print(env.game_name)
+    print(env.action_space)
     agent = map_dqn_agent.MapDQNAgent(sess, num_actions=env.action_space.n, eval_mode = True)
 
     sess.run(tf.compat.v1.global_variables_initializer())
@@ -79,35 +82,42 @@ def main(unused_argv):
     latest_checkpoint_version = checkpointer.get_latest_checkpoint_number(checkpoint_path)
     print("path: ", checkpoint_path)
     print("latest: " , latest_checkpoint_version)
-    if latest_checkpoint_version >= 0:
-      experiment_data = _checkpointer.load_checkpoint(latest_checkpoint_version) #ToDo here I can specify the iteration number instead of latest checkpoint
-    agent.unbundle(checkpoint_path, latest_checkpoint_version, experiment_data)
-    
-    observation = env.reset()
-    reward = 0
-    done = False
-    
 
-    step = 0
-    # Run the agent in the environment for one episode
-    while not done and step <=500:
-        action = agent.step(reward, observation) #this step function changes q outputs and state
+    # checkpoint_unbundle_arr = [latest_checkpoint_version-45,latest_checkpoint_version-25,latest_checkpoint_version-10,latest_checkpoint_version]
+    checkpoint_unbundle_arr = [0,1,2]
 
-        heads = {}
-        array_head = agent._sess.run(agent._net_outputs.q_values_on_heads, {agent.state_ph: agent.state})
+    epis = {}
+    for i in checkpoint_unbundle_arr:
+        experiment_data = _checkpointer.load_checkpoint(i) #ToDo here I can specify the iteration number instead of latest checkpoint
+        agent.unbundle(checkpoint_path, i, experiment_data)
+        print("agent unbundle")
+
+        observation = env.reset()
+        reward = 0
+        done = False
         
-        heads["head1"] = array_head[0].tolist()
-        heads["head2"] = array_head[1].tolist()
-        heads["head3"] = array_head[2].tolist()
 
-        observation, reward, done, _ = env.step(action)
-        print(f"Action: {action}, Reward: {reward}")
-        stat[f"step{step}"] = heads 
-        step += 1
+        step = 0
+        # Run the agent in the environment for one episode
+        while not done and step <=500:
+            action = agent.step(reward, observation) #this step function changes q outputs and state
 
-    print(stat)
-    with open(stat_file, 'w') as f:
-        json.dump(stat, f, indent=4)
+            heads = {}
+            array_head = agent._sess.run(agent._net_outputs.q_values_on_heads, {agent.state_ph: agent.state})
+            
+            heads["head1"] = array_head[0].tolist()
+            heads["head2"] = array_head[1].tolist()
+            heads["head3"] = array_head[2].tolist()
+
+            observation, reward, done, _ = env.step(action)
+            # print(f"Action: {action}, Reward: {reward}")
+            stat[f"step{step}"] = heads 
+            step += 1
+        epis[i]=stat
+
+        # print(stat)
+        with open(new_stat_file, 'w') as f:
+            json.dump(epis, f, indent=4)
 
 
 
